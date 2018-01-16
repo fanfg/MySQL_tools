@@ -33,7 +33,7 @@ if [ $? -eq 0 ]
           tar czf "$DumpFile" "$BackupPath" >> $LogFile 2>&1
           rm -rf $BackupPath
  else
-  echo "insert into t_sms_alert(phonenum,message) select mobile,'$IP:$1 daily backup failed' from dba_mobile ; "|mysql  -h db.ymatou.com --user=test  --password='123456' --port=30001 --database=dbmonitor
+  echo "insert into t_sms_alert(phonenum,message) select mobile,'$IP:$1 daily backup failed' from dba_mobile ; "|mysql  -h db.xxx.com --user=test  --password='123456' --port=30001 --database=dbmonitor
   echo "insert into t_mail_alert(title,mailaddress,message) select '$IP:$1 daily backup failed','DBA@xxx.com','$IP:30001 daily backup failed'; "|mysql  -h db.xxx.com --user=test --password='123456' --port=30001 --database=dbmonitor
 fi
 
