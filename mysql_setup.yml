@@ -4,7 +4,7 @@
   gather_facts: no 
   vars:
     db_port: 30010
-    server_id: 110211
+    server_id: 123456
     max_connections: 1000
     ibp_size: 1G
   remote_user: root
@@ -48,7 +48,7 @@
     shell: mysqld_safe --defaults-file=/etc/my{{db_port}}.cnf  &
   
   # - name : monitor delay
-  #    # shell: echo "CALL monitor_time"|mysql -utest -p'123456'  -S /data/mysql30013/mysql.sock -Ddbmanager &
+  #    # shell: echo "CALL monitor_time"|mysql -utest -p'123456'  -S /data/mysql30010/mysql.sock -Ddbmanager &
   #      
   #  # fact var
   #  - name: mkdir /data/host
