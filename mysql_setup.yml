@@ -1,0 +1,56 @@
+
+---
+- hosts: mysql
+  gather_facts: no 
+  vars:
+    db_port: 30010
+    server_id: 110211
+    max_connections: 1000
+    ibp_size: 1G
+  remote_user: root
+  tasks:
+  - name: yum pip
+    yum:  name=python-pip
+ 
+  - name: scp tar file
+    copy: src=/usr/local/mysql-5.7.20-linux-glibc2.12-x86_64.tar.gz  dest=/usr/local
+
+
+  - name: unarchive
+    unarchive: src=/usr/local/mysql-5.7.20-linux-glibc2.12-x86_64.tar.gz dest=/usr/local/ remote_src=yes
+
+  - name: mv mysql-5.7.20-linux-glibc2.12-x86_64 mysql
+    shell: mv /usr/local/mysql-5.7.20-linux-glibc2.12-x86_64 /usr/local/mysql 
+ 
+  - name: mkdir /data/mysqlport
+    file: path=/data/mysql{{db_port}} state=directory
+
+  - name: add mysql user
+    raw:  groupadd -r mysql&& useradd -r -g mysql -s /sbin/nologin mysql && chown -R mysql:mysql /usr/local/mysql
+    ignore_errors: True
+  
+  - name: chown /data
+    command: chown -R mysql:mysql /data
+
+  - name: cp bin /usr/bin
+    shell: \cp   /usr/local/mysql/bin/* /usr/bin 
+ 
+  - name: mkdir /data/mysqlport
+    file: path=/data/mysql{{db_port}} state=directory
+  
+  - name: copy conf
+    template: src=/usr/local/ansible/mysql_cnf_template.j2  dest=/etc/my{{db_port}}.cnf force=yes
+  
+  - name: mysql initialize
+    shell: /usr/local/mysql/bin/mysqld   --defaults-file=/etc/my{{db_port}}.cnf --user=mysql  --basedir=/usr/local/mysql --datadir=/data/mysql{{db_port}}/   --initialize-insecure
+  
+  - name : mysqld start
+    shell: mysqld_safe --defaults-file=/etc/my{{db_port}}.cnf  &
+  
+  # - name : monitor delay
+  #    # shell: echo "CALL monitor_time"|mysql -utest -p'123456'  -S /data/mysql30013/mysql.sock -Ddbmanager &
+  #      
+  #  # fact var
+  #  - name: mkdir /data/host
+  #    file: path=/data/{{ansible_hostname}} state=directory
+  #
