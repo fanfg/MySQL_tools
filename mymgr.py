@@ -70,7 +70,7 @@ def get_metrics(server_ip,**strconn):
 @click.option('--user', default='root', help='user to connect MySQL', type=str)
 @click.option('--password', default='stressMysql', help='password to connect MySQL', type=str)
 @click.option('--port', default=40001, help=' MySQL port', type=int)
-@click.option('--count', default=10, help="display n times interval 1s ", type=int)
+@click.option('--count', default=600, help="display n times interval 1s ", type=int)
 @click.option('--interavl', default=1, help="display n times interval 1s ", type=int)
 def print_monitor_data(count, host, port, user, password,interavl):
     """get the information of  the MGR members ."""
@@ -104,11 +104,9 @@ def print_monitor_data(count, host, port, user, password,interavl):
     for i in lhostinfo:
         temp_metrics_data[i.MEMBER_IP] = get_metrics(i.MEMBER_IP,**conn_str)
     for t in range(count):
-        # print(
-        #     '---ROLE------MEMBER_IP------MEMBER_HOST -------MEMBER_PORT---MEMBER_STATE--------TIME-----THREADS--INSERT---UPDATE---SELECT---DELETE')
         click.secho(
-            '---ROLE------MEMBER_IP------MEMBER_HOST -------MEMBER_PORT---MEMBER_STATE--------TIME-----THREADS--INSERT---UPDATE---SELECT---DELETE---NETWORKIN--NETWORKOUT',
-            fg='red', underline=True)
+            '---ROLE------MEMBER_IP------MEMBER_HOST -------MEMBER_PORT---MEMBER_STATE--------TIME-----THREADS--INSERT---UPDATE---SELECT---DELETE-----NETWORKIN--NETWORKOUT',
+            fg='green', underline=True)
         for i in lhostinfo:
             metrics_data = get_metrics(i.MEMBER_IP,**conn_str)
             com_select = long(metrics_data['Com_select']) - long(temp_metrics_data[i.MEMBER_IP]['Com_select'])
@@ -117,7 +115,7 @@ def print_monitor_data(count, host, port, user, password,interavl):
             com_update = long(metrics_data['Com_update']) - long(temp_metrics_data[i.MEMBER_IP]['Com_update'])
             network_in = long(metrics_data['Bytes_received']) - long(temp_metrics_data[i.MEMBER_IP]['Bytes_received'])
             network_out = long(metrics_data['Bytes_sent']) - long(temp_metrics_data[i.MEMBER_IP]['Bytes_sent'])
-            print('%10s %10s %10s %10s %10s | %10s %5s %8s %8s %8s %8s | %10s %10s' % (
+            print('%10s %10s %20s %10s %10s | %10s %5s %8s %8s %8s %8s | %10s %10s' % (
                 i.ROLE, i.MEMBER_IP, i.MEMBER_HOST, i.MEMBER_PORT, i.MEMBER_STATE,
                 metrics_data['time'][0], metrics_data['Threads_connected'], com_insert, com_update, com_select,
                 com_delete, network_in, network_out))
