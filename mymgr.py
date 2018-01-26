@@ -71,8 +71,8 @@ def get_metrics(server_ip,**strconn):
 @click.option('--password', default='stressMysql', help='password to connect MySQL', type=str)
 @click.option('--port', default=40001, help=' MySQL port', type=int)
 @click.option('--count', default=600, help="display n times interval 1s ", type=int)
-@click.option('--interavl', default=1, help="display n times interval 1s ", type=int)
-def print_monitor_data(count, host, port, user, password,interavl):
+@click.option('--interval', default=1, help="display n times interval 1s ", type=int)
+def print_monitor_data(count, host, port, user, password,interval):
     """get the information of  the MGR members ."""
     conn_str = {"host": host, "user": user, "password": password, "port": port,
                 "db": "performance_schema"}
@@ -120,7 +120,7 @@ def print_monitor_data(count, host, port, user, password,interavl):
                 metrics_data['time'][0], metrics_data['Threads_connected'], com_insert, com_update, com_select,
                 com_delete, network_in, network_out))
             temp_metrics_data[i.MEMBER_IP] = metrics_data
-        time.sleep(interavl)
+        time.sleep(interval)
         print (' ')
 
 
