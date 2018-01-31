@@ -109,16 +109,21 @@ def print_monitor_data(count, host, port, user, password,interval):
             fg='green', underline=True)
         for i in lhostinfo:
             metrics_data = get_metrics(i.MEMBER_IP,**conn_str)
-            com_select = long(metrics_data['Com_select']) - long(temp_metrics_data[i.MEMBER_IP]['Com_select'])
-            com_insert = long(metrics_data['Com_insert']) - long(temp_metrics_data[i.MEMBER_IP]['Com_insert'])
-            com_delete = long(metrics_data['Com_delete']) - long(temp_metrics_data[i.MEMBER_IP]['Com_delete'])
-            com_update = long(metrics_data['Com_update']) - long(temp_metrics_data[i.MEMBER_IP]['Com_update'])
-            network_in = long(metrics_data['Bytes_received']) - long(temp_metrics_data[i.MEMBER_IP]['Bytes_received'])
-            network_out = long(metrics_data['Bytes_sent']) - long(temp_metrics_data[i.MEMBER_IP]['Bytes_sent'])
-            print('%10s %10s %20s %10s %10s | %10s %5s %8s %8s %8s %8s | %10s %10s' % (
+            res = {}
+            # com_select = long(metrics_data['Com_select']) - long(temp_metrics_data[i.MEMBER_IP]['Com_select'])
+            # com_insert = long(metrics_data['Com_insert']) - long(temp_metrics_data[i.MEMBER_IP]['Com_insert'])
+            # com_delete = long(metrics_data['Com_delete']) - long(temp_metrics_data[i.MEMBER_IP]['Com_delete'])
+            # com_update = long(metrics_data['Com_update']) - long(temp_metrics_data[i.MEMBER_IP]['Com_update'])
+            # network_in = long(metrics_data['Bytes_received']) - long(temp_metrics_data[i.MEMBER_IP]['Bytes_received'])
+            # network_out = long(metrics_data['Bytes_sent']) - long(temp_metrics_data[i.MEMBER_IP]['Bytes_sent'])
+            for key, val in zip(metrics_data.items(), temp_metrics_data[i.MEMBER_IP].items()):
+                if key[0] != 'time':
+                    res[key[0]] = long(key[1]) - long(val[1])
+            print('%10s %10s %10s %10s %10s | %10s %5s %8s %8s %8s %8s | %10s %10s' % (
                 i.ROLE, i.MEMBER_IP, i.MEMBER_HOST, i.MEMBER_PORT, i.MEMBER_STATE,
-                metrics_data['time'][0], metrics_data['Threads_connected'], com_insert, com_update, com_select,
-                com_delete, network_in, network_out))
+                metrics_data['time'][0], metrics_data['Threads_connected'], res['Com_insert'], res['Com_update'],
+                res['Com_select'],
+                res['Com_delete'], res['Bytes_received'], res['Bytes_sent']))
             temp_metrics_data[i.MEMBER_IP] = metrics_data
         time.sleep(interval)
         print (' ')
