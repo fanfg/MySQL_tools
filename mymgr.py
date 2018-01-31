@@ -116,9 +116,9 @@ def print_monitor_data(count, host, port, user, password,interval):
             # com_update = long(metrics_data['Com_update']) - long(temp_metrics_data[i.MEMBER_IP]['Com_update'])
             # network_in = long(metrics_data['Bytes_received']) - long(temp_metrics_data[i.MEMBER_IP]['Bytes_received'])
             # network_out = long(metrics_data['Bytes_sent']) - long(temp_metrics_data[i.MEMBER_IP]['Bytes_sent'])
-            for key, val in zip(metrics_data.items(), temp_metrics_data[i.MEMBER_IP].items()):
-                if key[0] != 'time':
-                    res[key[0]] = long(key[1]) - long(val[1])
+            for current_val, before_val in zip(metrics_data.items(), temp_metrics_data[i.MEMBER_IP].items()):
+                if current_val[0] != 'time':
+                    res[current_val[0]] = long(current_val[1]) - long(before_val[1])
             print('%10s %10s %10s %10s %10s | %10s %5s %8s %8s %8s %8s | %10s %10s' % (
                 i.ROLE, i.MEMBER_IP, i.MEMBER_HOST, i.MEMBER_PORT, i.MEMBER_STATE,
                 metrics_data['time'][0], metrics_data['Threads_connected'], res['Com_insert'], res['Com_update'],
