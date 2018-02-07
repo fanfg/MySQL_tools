@@ -18,7 +18,7 @@ def select_data(ssql, **connstr):
                            passwd=connstr['password'],
                            port=connstr['port'],
                            db=connstr['db'])
-    ds = {}
+    ds = （）
     try:
         with conn.cursor() as cur:
             cur.execute(ssql)
